@@ -133,7 +133,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func hideDebug() {
+    @objc func hideDebug() {
         debugConstr.constant = 0;
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
@@ -159,7 +159,7 @@ extension ViewController: MTKViewDelegate
             return;
         }
         
-        let commandBuffer = commandQueue.makeCommandBuffer()
+        let commandBuffer = commandQueue.makeCommandBuffer()!
         let destinationTexture = currentDrawable.texture
         
         filterChain.activeFilters[0] = blurSwitch.isOn
@@ -171,7 +171,7 @@ extension ViewController: MTKViewDelegate
         }
         filterChain.encode(to: commandBuffer, sourceTexture: sourceTexture, destinationTexture: filterFinalTexture)
         
-        let blitEncoder = commandBuffer.makeBlitCommandEncoder()
+        let blitEncoder = commandBuffer.makeBlitCommandEncoder()!
         blitEncoder.copy(from: !debugPresented ? sourceTexture : filterFinalTexture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: MTLOrigin(x: 0, y: 0, z: 0), sourceSize: MTLSize(width: 720, height: 1280, depth: 1),
                          to: destinationTexture, destinationSlice: 0, destinationLevel: 0, destinationOrigin: MTLOrigin(x: 0, y: 0, z: 0))
         blitEncoder.endEncoding()
@@ -224,7 +224,7 @@ extension ViewController: MTKViewDelegate
                 let textDescr = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Unorm, width: 28, height: 28, mipmapped: false)
                 let texture = self.device.makeTexture(descriptor: textDescr)
                 
-                let inputImage = MPSImage(texture: texture, featureChannels: 1)
+                let inputImage = MPSImage(texture: texture!, featureChannels: 1)
                 
                 inputImage.texture.replace(region: MTLRegionMake2D(0, 0, 28, 28), mipmapLevel: 0,
                                            withBytes: CFDataGetBytePtr(cnnImage.dataProvider!.data!), bytesPerRow: 28)

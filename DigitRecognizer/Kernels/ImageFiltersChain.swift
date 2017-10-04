@@ -26,8 +26,8 @@ class ImageFiltersChain: ImageFilter {
         
         let textDescr = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: Int(size.width), height: Int(size.height), mipmapped: false)
         
-        intermediateTexture1 = device.makeTexture(descriptor: textDescr)
-        intermediateTexture2 = device.makeTexture(descriptor: textDescr)
+        intermediateTexture1 = device.makeTexture(descriptor: textDescr)!
+        intermediateTexture2 = device.makeTexture(descriptor: textDescr)!
     }
     
     func encode(to commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {

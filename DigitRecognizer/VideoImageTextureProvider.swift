@@ -41,11 +41,9 @@ class VideoImageTextureProvider: NSObject {
 
     func didInitializeCaptureSession() -> Bool {
         
-        captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720
+        captureSession.sessionPreset = AVCaptureSession.Preset.iFrame1280x720
         
-        guard let camera = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera,
-                                                         mediaType: AVMediaTypeVideo,
-                                                         position: .back)
+        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
             else {
                 print("Unable to access camera.")
                 return false
@@ -68,12 +66,12 @@ class VideoImageTextureProvider: NSObject {
         }
         
         let videoOutput = AVCaptureVideoDataOutput()
-        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable: Int(kCVPixelFormatType_32BGRA)]
+        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
         videoOutput.setSampleBufferDelegate(self, queue: sampleBufferCallbackQueue)
         
         if captureSession.canAddOutput(videoOutput) {
             captureSession.addOutput(videoOutput)
-            if let connection = videoOutput.connections.first as? AVCaptureConnection {
+            if let connection = videoOutput.connections.first {
                 connection.videoOrientation = AVCaptureVideoOrientation.portrait
             }
         }
@@ -108,7 +106,7 @@ class VideoImageTextureProvider: NSObject {
 
 extension VideoImageTextureProvider: AVCaptureVideoDataOutputSampleBufferDelegate
 {
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         connection.videoOrientation = AVCaptureVideoOrientation(rawValue: UIApplication.shared.statusBarOrientation.rawValue)!
         

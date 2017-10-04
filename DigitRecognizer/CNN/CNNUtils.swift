@@ -9,8 +9,6 @@
 import MetalPerformanceShaders
 
 class SlimMPSCNNConvolution: MPSCNNConvolution {
-
-    private var padding = true
     
     init(kernelWidth: UInt, kernelHeight: UInt, inputFeatureChannels: UInt, outputFeatureChannels: UInt, neuronFilter: MPSCNNNeuron? = nil, device: MTLDevice, kernelParamsBinaryName: String, strideXY: (UInt, UInt) = (1, 1)) {
         
@@ -53,6 +51,10 @@ class SlimMPSCNNConvolution: MPSCNNConvolution {
         
         super.encode(commandBuffer: commandBuffer, sourceImage: sourceImage, destinationImage: destinationImage)
     }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 class SlimMPSCNNFullyConnected: MPSCNNFullyConnected{
@@ -84,6 +86,10 @@ class SlimMPSCNNFullyConnected: MPSCNNFullyConnected{
                    kernelWeights: weights.data,
                    biasTerms: bias.data,
                    flags: MPSCNNConvolutionFlags.none)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

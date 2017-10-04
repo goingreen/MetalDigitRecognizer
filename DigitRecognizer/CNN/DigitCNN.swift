@@ -95,7 +95,7 @@ class DigitCNN {
         assert(inputImage.width == 28 && inputImage.height == 28)
         
         autoreleasepool {
-            let commandBuffer = commandQueue.makeCommandBuffer()
+            let commandBuffer = commandQueue.makeCommandBuffer()!
             
             // output will be stored in this image
             let finalLayer = MPSImage(device: commandBuffer.device, imageDescriptor: did)

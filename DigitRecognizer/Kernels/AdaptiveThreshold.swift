@@ -16,7 +16,7 @@ class AdaptiveThreshold: ImageFilter {
     var c: Float
     
     init(device: MTLDevice, kernelSize: Int, C: Int) {
-        let function = device.newDefaultLibrary()!.makeFunction(name: "adaptive_threshold")!
+        let function = device.makeDefaultLibrary()!.makeFunction(name: "adaptive_threshold")!
         computeState = try! device.makeComputePipelineState(function: function)
         c = Float(C) / 255
         makeWeightsTexture(size: kernelSize)
@@ -24,18 +24,18 @@ class AdaptiveThreshold: ImageFilter {
     
     func encode(to commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
         let computeEncoder = commandBuffer.makeComputeCommandEncoder()
-        computeEncoder.setComputePipelineState(computeState)
-        computeEncoder.setTexture(sourceTexture, at: 0)
-        computeEncoder.setTexture(destinationTexture, at: 1)
-        computeEncoder.setTexture(weightsTexture, at: 2)
-        computeEncoder.setBytes(&c, length: MemoryLayout<Float>.size, at: 0)
+        computeEncoder?.setComputePipelineState(computeState)
+        computeEncoder?.setTexture(sourceTexture, index: 0)
+        computeEncoder?.setTexture(destinationTexture, index: 1)
+        computeEncoder?.setTexture(weightsTexture, index: 2)
+        computeEncoder?.setBytes(&c, length: MemoryLayout<Float>.size, index: 0)
         
         let threadGroup = MTLSize(width: 16, height: 16, depth: 1)
         let threadGroupsCount = MTLSize(width: (sourceTexture.width + 15) / 16, height: (sourceTexture.height + 15) / 16, depth: 1)
         
-        computeEncoder.dispatchThreadgroups(threadGroupsCount, threadsPerThreadgroup: threadGroup)
+        computeEncoder?.dispatchThreadgroups(threadGroupsCount, threadsPerThreadgroup: threadGroup)
         
-        computeEncoder.endEncoding()
+        computeEncoder?.endEncoding()
     }
     
     func makeWeightsTexture(size: Int) {
